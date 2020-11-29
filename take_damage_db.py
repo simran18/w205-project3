@@ -24,3 +24,13 @@ cursor.execute("INSERT INTO damage VALUES (6, 'Knight', 24)")
 cursor.execute("INSERT INTO damage VALUES (7, 'Tomato Person', 16)")
 cursor.execute("INSERT INTO damage VALUES (8, 'Tami', 57)")
 cursor.execute("INSERT INTO damage VALUES (9, 'Claptrap C-137', '1')")
+
+connection.commit()
+
+# See Results For Debug Only
+#cursor.execute("SELECT * FROM damage")
+
+#results = cursor.fetchall()
+#print(results)
+
+connection.close()
