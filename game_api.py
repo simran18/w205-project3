@@ -21,8 +21,8 @@ def dict_factory(cursor, row):
 
 
 #Done
-@app.route("/join_a_guild/<guild_id")
-def join_a_guild():
+@app.route("/join_a_guild/<guild_id>")
+def join_a_guild(guild_id):
     
     """
     This function responds to a request for /api/join_a_guild/{guild_id}
@@ -41,6 +41,8 @@ def join_a_guild():
     cur = conn.cursor()
     
     results = cur.execute(query).fetchall()
+    
+    print(results)
     
     join_guild_event = {'event_type': 'join_guild', 
                         'attributes': results[0]}
@@ -100,7 +102,7 @@ def accept_quest(quest_id):
     :return:              quest and attributes matching ID as JSON
     """
     
-    query = "SELECT * \
+    query_1 = "SELECT * \
              FROM quest \
              WHERE quest_id =" + str(quest_id) +';'
     
@@ -108,7 +110,7 @@ def accept_quest(quest_id):
     conn.row_factory = dict_factory
     cur = conn.cursor()
     
-    results = cur.execute(query).fetchall()
+    results = cur.execute(query_1).fetchall()
         
     accept_quest_event = {'event_type': 'accept_quest', 
                           'attributes': results[0]}
