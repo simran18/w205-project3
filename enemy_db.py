@@ -65,3 +65,13 @@ cursor.execute("INSERT INTO enemy VALUES (47, 'Maureen', 9)")
 cursor.execute("INSERT INTO enemy VALUES (48, 'Benedetta', 55)")
 cursor.execute("INSERT INTO enemy VALUES (49, 'Nona', 50)")
 cursor.execute("INSERT INTO enemy VALUES (50, 'Gus', 93)")
+
+connection.commit()
+
+# See Results For Debug Only
+#cursor.execute("SELECT * FROM enemy")
+
+#results = cursor.fetchall()
+#print(results)
+
+connection.close()

@@ -55,3 +55,13 @@ cursor.execute("INSERT INTO guild VALUES (37, 'Archepoint Guild')")
 cursor.execute("INSERT INTO guild VALUES (38, 'Cyberlight Guild')")
 cursor.execute("INSERT INTO guild VALUES (39, 'Brutalflight Guild')")
 cursor.execute("INSERT INTO guild VALUES (40, 'Archespace Guild')")
+
+connection.commit()
+
+# See Results for debug only
+#cursor.execute("SELECT * FROM inventory")
+
+#results = cursor.fetchall()
+#print(results)
+
+connection.close()
