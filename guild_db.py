@@ -22,3 +22,13 @@ cursor.execute("INSERT INTO guild VALUES (4, 'Data Wranglers Guild')")
 cursor.execute("INSERT INTO guild VALUES (5, 'Traders Guild')")
 cursor.execute("INSERT INTO guild VALUES (6, 'Assassins Guild')")
 cursor.execute("INSERT INTO guild VALUES (7, 'Knights Templar')")
+
+connection.commit()
+
+# See Results for debug only
+#cursor.execute("SELECT * FROM inventory")
+
+#results = cursor.fetchall()
+#print(results)
+
+connection.close()
