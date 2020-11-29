@@ -20,26 +20,61 @@ def dict_factory(cursor, row):
     return d
 
 
-@app.route("/join_a_guild")
+#Done
+@app.route("/join_a_guild/<guild_id")
 def join_a_guild():
+    
+    """
+    This function responds to a request for /api/join_a_guild/{guild_id}
+    with one matching transaction from quest.db
+    
+    :param guild_id:      ID of the enemy
+    :return:              quest and attributes matching ID as JSON
+    """
+    
+    query = "SELECT * \
+             FROM guild \
+             WHERE guild_id =" + str(guild_id) +';'
+
+    conn = sqlite3.connect('/w205/project-3-cal-dortiz/guild.db')
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
+    
+    results = cur.execute(query).fetchall()
+    
     join_guild_event = {'event_type': 'join_guild', 
-                        'attributes': {
-                            "guild_name": "Data Masters"
-                        }
-                       }
+                        'attributes': results[0]}
+    
     log_to_kafka('events', join_guild_event)
     return "Joined Guild!\n"
 
 
-@app.route("/slay_a_dragon")
-def slay_a_dragon():
-    slay_a_dragon_event = {'event_type': 'slay_a_dragon', 
-                           'attributes': {
-                               'type': 'Norwegian Ridgeback'
-                           }
-                          }
-    log_to_kafka('events', slay_a_dragon_event)
-    return "Slayed A Dragon!\n"
+@app.route("/kill_enemy/<enemy_id>")
+def kill_enemy():
+    
+    """
+    This function responds to a request for /api/kill_enemy/{enemy_id}
+    with one matching transaction from quest.db
+    
+    :param enm,y_id:      ID of the enemy
+    :return:              quest and attributes matching ID as JSON
+    """
+    
+    query = "SELECT * \
+             FROM enemy \
+             WHERE enemy_id =" + str(enemy_id) +';'
+    
+    conn = sqlite3.connect('/w205/project-3-cal-dortiz/enemy.db')
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
+    
+    results = cur.execute(query).fetchall()
+    
+    slay_a_dragon_event = {'event_type': 'kill_enemy', 
+                           'attributes': results[0]}
+    
+    log_to_kafka('events', kill_enemy_event)
+    return "kill_enemy!\n"
 
 
 @app.route("/take_damage")
@@ -54,24 +89,32 @@ def take_damage():
     return "Took Damage!\n"
 
 
-@app.route("/accepted_a_quest")
-def accept_quest():
+@app.route("/accepted_a_quest/<quest_id>")
+def accept_quest(quest_id):
+    
+    """
+    This function responds to a request for /api/accepted_a_quest/{quest_id}
+    with one matching transaction from quest.db
+    
+    :param quest_id:      ID of the quest
+    :return:              quest and attributes matching ID as JSON
+    """
+    
+    query = "SELECT * \
+             FROM quest \
+             WHERE quest_id =" + str(quest_id) +';'
+    
+    conn = sqlite3.connect('/w205/project-3-cal-dortiz/quest.db')
+    conn.row_factory = dict_factory
+    cur = conn.cursor()
+    
+    results = cur.execute(query).fetchall()
+        
     accept_quest_event = {'event_type': 'accept_quest', 
-                          'attributes': {
-                              'quest_name': 'Into The Breach', 
-                              'quest_giver': 'Ronald McDonald'
-                          }
-                         }
+                          'attributes': results[0]}
+    
     log_to_kafka('events', accept_quest_event)
     return "Quest Accepted!\n"
-
-
-def dict_factory(cursor, row):
-    d = {}
-    for idx, col in enumerate(cursor.description):
-        d[col[0]] = row[idx]
-    return d
-
 
 
 @app.route("/transaction/<inventory_id>")
@@ -82,8 +125,9 @@ def transaction(inventory_id):
     with one matching transaction from store_transactions.db
     
     :param inventory_id:  ID of the line item being transacted
-    :return:              transaction matching ID
+    :return:              transaction and attributes matching ID as JSON
     """
+    
     query = "SELECT * \
              FROM inventory \
              WHERE inventory_id =" + str(inventory_id) +';'
