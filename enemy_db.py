@@ -24,3 +24,13 @@ cursor.execute("INSERT INTO enemy VALUES (6, 'Ronald McDonald', 36)")
 cursor.execute("INSERT INTO enemy VALUES (7, 'Lex Luther', 47)")
 cursor.execute("INSERT INTO enemy VALUES (8, 'Enemy Squire', 3)")
 cursor.execute("INSERT INTO enemy VALUES (9, 'Sheep', 1)")
+
+connection.commit()
+
+# See Results For Debug Only
+#cursor.execute("SELECT * FROM enemy")
+
+#results = cursor.fetchall()
+#print(results)
+
+connection.close()

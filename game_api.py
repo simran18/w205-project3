@@ -52,7 +52,7 @@ def join_a_guild(guild_id):
 
 
 @app.route("/kill_enemy/<enemy_id>")
-def kill_enemy():
+def kill_enemy(enemy_id):
     
     """
     This function responds to a request for /api/kill_enemy/{enemy_id}
@@ -72,7 +72,7 @@ def kill_enemy():
     
     results = cur.execute(query).fetchall()
     
-    slay_a_dragon_event = {'event_type': 'kill_enemy', 
+    kill_enemy_event = {'event_type': 'kill_enemy', 
                            'attributes': results[0]}
     
     log_to_kafka('events', kill_enemy_event)
