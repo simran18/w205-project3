@@ -16,7 +16,7 @@ cursor.execute(command1)
 # Create Purchase Table
 
 command2 = """CREATE TABLE IF NOT EXISTS
-inventory(inventory_id INTEGER PRIMARY KEY, catagory STRING, item_name STRING, store_id INTEGER, total_cost FLOAT, on_hand_qty INTEGER, 
+inventory(inventory_id INTEGER PRIMARY KEY, category STRING, item_name STRING, store_id INTEGER, total_cost FLOAT, on_hand_qty INTEGER, 
 FOREIGN KEY(store_id) REFERENCES stores(store_id))"""
 
 cursor.execute(command2)
