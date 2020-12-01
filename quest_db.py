@@ -27,7 +27,7 @@ cursor.execute("INSERT INTO quest VALUES (9, 'There Is No Rule 6', 'Saejio Inaht
 cursor.execute("INSERT INTO quest VALUES (10, 'What is going on?', 'Teimo Kikukki')")
 cursor.execute("INSERT INTO quest VALUES (11, 'How much longer will this flux take?', 'Reino Uonno')")
 cursor.execute("INSERT INTO quest VALUES (12, 'There is too much slaying and yapping', 'Veil of Symmetry')")
-cursor.execute("INSERT INTO quest VALUES (13, 'What is the rush?', 'Sir Drexel of Yourn)")
+cursor.execute("INSERT INTO quest VALUES (13, 'What is the rush?', 'Sir Drexel of Yourn')")
 cursor.execute("INSERT INTO quest VALUES (14, 'Lights not working, there might be possible..', 'Saejio Inahto')")
 cursor.execute("INSERT INTO quest VALUES (15, 'There Is No Rule 10', 'Bevel Right')")
 
