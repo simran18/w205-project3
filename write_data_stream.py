@@ -170,6 +170,7 @@ def main():
     spark = SparkSession \
         .builder \
         .appName("ExtractEventsJob") \
+        .enableHiveSupport() \
         .getOrCreate()
 
     raw_events = spark \
