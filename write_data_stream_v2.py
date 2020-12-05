@@ -175,76 +175,76 @@ def main():
         .option("subscribe", "events") \
         .load()
 
-#     enemies_killed = raw_events \
-#         .filter(is_enemy_killed(raw_events.value.cast('string'))) \
-#         .select(raw_events.value.cast('string').alias('raw_event'),
-#                 raw_events.timestamp.cast('string'),
-#                 from_json(raw_events.value.cast('string'),
-#                           kill_enemy_event_schema()).alias('json')) \
-#         .select('raw_event', 'timestamp', 'json.*')
+    enemies_killed = raw_events \
+        .filter(is_enemy_killed(raw_events.value.cast('string'))) \
+        .select(raw_events.value.cast('string').alias('raw_event'),
+                raw_events.timestamp.cast('string'),
+                from_json(raw_events.value.cast('string'),
+                          kill_enemy_event_schema()).alias('json')) \
+        .select('raw_event', 'timestamp', 'json.*')
     
-#     sink_enemy_kills = enemies_killed \
-#         .writeStream \
-#         .format("parquet") \
-#         .option("checkpointLocation", "/tmp/checkpoints_for_enemy_kills") \
-#         .option("path", "/tmp/enemies_killed") \
-#         .trigger(processingTime="10 seconds") \
-#         .start()
+    sink_enemy_kills = enemies_killed \
+        .writeStream \
+        .format("parquet") \
+        .option("checkpointLocation", "/tmp/checkpoints_for_enemy_kills") \
+        .option("path", "/tmp/enemies_killed") \
+        .trigger(processingTime="10 seconds") \
+        .start()
 
 #     sink_enemy_kills.awaitTermination()
     
-#     guild_joins = raw_events \
-#         .filter(is_guild_join(raw_events.value.cast('string'))) \
-#         .select(raw_events.value.cast('string').alias('raw_event'),
-#                 raw_events.timestamp.cast('string'),
-#                 from_json(raw_events.value.cast('string'),
-#                           join_guild_event_schema()).alias('json')) \
-#         .select('raw_event', 'timestamp', 'json.*')
+    guild_joins = raw_events \
+        .filter(is_guild_join(raw_events.value.cast('string'))) \
+        .select(raw_events.value.cast('string').alias('raw_event'),
+                raw_events.timestamp.cast('string'),
+                from_json(raw_events.value.cast('string'),
+                          join_guild_event_schema()).alias('json')) \
+        .select('raw_event', 'timestamp', 'json.*')
 
-#     sink_guild_joins = guild_joins \
-#         .writeStream \
-#         .format("parquet") \
-#         .option("checkpointLocation", "/tmp/checkpoints_for_guild_joins") \
-#         .option("path", "/tmp/guild_joins") \
-#         .trigger(processingTime="10 seconds") \
-#         .start()
+    sink_guild_joins = guild_joins \
+        .writeStream \
+        .format("parquet") \
+        .option("checkpointLocation", "/tmp/checkpoints_for_guild_joins") \
+        .option("path", "/tmp/guild_joins") \
+        .trigger(processingTime="10 seconds") \
+        .start()
 
 #     sink_guild_joins.awaitTermination()
     
-#     quest_accepted = raw_events \
-#         .filter(is_quest_accepted(raw_events.value.cast('string'))) \
-#         .select(raw_events.value.cast('string').alias('raw_event'),
-#                 raw_events.timestamp.cast('string'),
-#                 from_json(raw_events.value.cast('string'),
-#                           accept_quest_event_schema()).alias('json')) \
-#         .select('raw_event', 'timestamp', 'json.*')
+    quest_accepted = raw_events \
+        .filter(is_quest_accepted(raw_events.value.cast('string'))) \
+        .select(raw_events.value.cast('string').alias('raw_event'),
+                raw_events.timestamp.cast('string'),
+                from_json(raw_events.value.cast('string'),
+                          accept_quest_event_schema()).alias('json')) \
+        .select('raw_event', 'timestamp', 'json.*')
     
-#     sink_accept_quest = quest_accepted \
-#         .writeStream \
-#         .format("parquet") \
-#         .option("checkpointLocation", "/tmp/checkpoints_for_accept_quest") \
-#         .option("path", "/tmp/quest_accept") \
-#         .trigger(processingTime="10 seconds") \
-#         .start()
+    sink_accept_quest = quest_accepted \
+        .writeStream \
+        .format("parquet") \
+        .option("checkpointLocation", "/tmp/checkpoints_for_accept_quest") \
+        .option("path", "/tmp/quest_accept") \
+        .trigger(processingTime="10 seconds") \
+        .start()
 
 #     sink_accept_quest.awaitTermination()
 
     
-#     damage_taken = raw_events \
-#         .filter(is_damage_taken(raw_events.value.cast('string'))) \
-#         .select(raw_events.value.cast('string').alias('raw_event'),
-#                 raw_events.timestamp.cast('string'),
-#                 from_json(raw_events.value.cast('string'),
-#                           take_damage_event_schema()).alias('json')) \
-#         .select('raw_event', 'timestamp', 'json.*')
+    damage_taken = raw_events \
+        .filter(is_damage_taken(raw_events.value.cast('string'))) \
+        .select(raw_events.value.cast('string').alias('raw_event'),
+                raw_events.timestamp.cast('string'),
+                from_json(raw_events.value.cast('string'),
+                          take_damage_event_schema()).alias('json')) \
+        .select('raw_event', 'timestamp', 'json.*')
     
-#     sink_take_damage = damage_taken \
-#         .writeStream \
-#         .format("parquet") \
-#         .option("checkpointLocation", "/tmp/checkpoints_for_take_damage") \
-#         .option("path", "/tmp/damage_taken") \
-#         .trigger(processingTime="10 seconds") \
-#         .start()
+    sink_take_damage = damage_taken \
+        .writeStream \
+        .format("parquet") \
+        .option("checkpointLocation", "/tmp/checkpoints_for_take_damage") \
+        .option("path", "/tmp/damage_taken") \
+        .trigger(processingTime="10 seconds") \
+        .start()
 
 #     sink_take_damage.awaitTermination()
 
@@ -265,8 +265,9 @@ def main():
         .trigger(processingTime="10 seconds") \
         .start()
 
-    sink_transactions.awaitTermination()
+#     sink_transactions.awaitTermination()
     
+    spark.streams.awaitAnyTermination()
     
 if __name__ == "__main__":
     main()
