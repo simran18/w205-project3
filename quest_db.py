@@ -15,6 +15,7 @@ cursor.execute(command1)
 
 # Add to Stores
 
+cursor.execute("INSERT INTO quest VALUES (0, 'There Is No Rule 10', 'Bevel Right')")
 cursor.execute("INSERT INTO quest VALUES (1, 'Are We There, Yeti?', 'Sir Drexel of Yourn')")
 cursor.execute("INSERT INTO quest VALUES (2, 'Chasing A-Me 01','Donald Whent')")
 cursor.execute("INSERT INTO quest VALUES (3, 'TMission: Possible but Not Probable', 'Donald Whent')")
@@ -29,14 +30,13 @@ cursor.execute("INSERT INTO quest VALUES (11, 'How much longer will this flux ta
 cursor.execute("INSERT INTO quest VALUES (12, 'There is too much slaying and yapping', 'Veil of Symmetry')")
 cursor.execute("INSERT INTO quest VALUES (13, 'What is the rush?', 'Sir Drexel of Yourn')")
 cursor.execute("INSERT INTO quest VALUES (14, 'Lights not working, there might be possible..', 'Saejio Inahto')")
-cursor.execute("INSERT INTO quest VALUES (15, 'There Is No Rule 10', 'Bevel Right')")
 
 connection.commit()
 
 # See Results for troubleshooting only
-#cursor.execute("SELECT * FROM quest")
+cursor.execute("SELECT * FROM quest")
 
-#results = cursor.fetchall()
-#print(results)
+results = cursor.fetchall()
+print(results)
 
 connection.close()

@@ -15,6 +15,7 @@ cursor.execute(command1)
 
 # Add to Stores
 
+cursor.execute("INSERT INTO damage VALUES (0, 'Claptrap C-137', '1')")
 cursor.execute("INSERT INTO damage VALUES (1, 'Dragon', 99)")
 cursor.execute("INSERT INTO damage VALUES (2, 'Mr. Meeseeks', 26)")
 cursor.execute("INSERT INTO damage VALUES (3, 'Bird Person', 41)")
@@ -23,14 +24,14 @@ cursor.execute("INSERT INTO damage VALUES (5, 'John Wick', 67)")
 cursor.execute("INSERT INTO damage VALUES (6, 'Knight', 24)")
 cursor.execute("INSERT INTO damage VALUES (7, 'Tomato Person', 16)")
 cursor.execute("INSERT INTO damage VALUES (8, 'Tami', 57)")
-cursor.execute("INSERT INTO damage VALUES (9, 'Claptrap C-137', '1')")
+
 
 connection.commit()
 
 # See Results For Debug Only
-#cursor.execute("SELECT * FROM damage")
+cursor.execute("SELECT * FROM damage")
 
-#results = cursor.fetchall()
-#print(results)
+results = cursor.fetchall()
+print(results)
 
 connection.close()
