@@ -15,6 +15,7 @@ cursor.execute(command1)
 
 # Add to Stores
 
+cursor.execute("INSERT INTO guild VALUES (0, 'Archespace Guild')")
 cursor.execute("INSERT INTO guild VALUES (1, 'Fighters Guild')")
 cursor.execute("INSERT INTO guild VALUES (2, 'Mages Guild')")
 cursor.execute("INSERT INTO guild VALUES (3, 'Thieves Guild')")
@@ -54,14 +55,14 @@ cursor.execute("INSERT INTO guild VALUES (36, 'Astroside Guild')")
 cursor.execute("INSERT INTO guild VALUES (37, 'Archepoint Guild')")
 cursor.execute("INSERT INTO guild VALUES (38, 'Cyberlight Guild')")
 cursor.execute("INSERT INTO guild VALUES (39, 'Brutalflight Guild')")
-cursor.execute("INSERT INTO guild VALUES (40, 'Archespace Guild')")
+
 
 connection.commit()
 
 # See Results for debug only
-#cursor.execute("SELECT * FROM inventory")
+cursor.execute("SELECT * FROM guild")
 
-#results = cursor.fetchall()
-#print(results)
+results = cursor.fetchall()
+print(results)
 
 connection.close()
