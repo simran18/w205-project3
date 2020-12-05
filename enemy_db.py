@@ -15,6 +15,7 @@ cursor.execute(command1)
 
 # Add to Stores
 
+cursor.execute("INSERT INTO enemy VALUES (0, 'Gus', 93)")
 cursor.execute("INSERT INTO enemy VALUES (1, 'Mr. Meeseeks', 5)")
 cursor.execute("INSERT INTO enemy VALUES (2, 'Dragon', 99)")
 cursor.execute("INSERT INTO enemy VALUES (3, 'Private', 1)")
@@ -64,14 +65,14 @@ cursor.execute("INSERT INTO enemy VALUES (46, 'Adan', 52)")
 cursor.execute("INSERT INTO enemy VALUES (47, 'Maureen', 9)")
 cursor.execute("INSERT INTO enemy VALUES (48, 'Benedetta', 55)")
 cursor.execute("INSERT INTO enemy VALUES (49, 'Nona', 50)")
-cursor.execute("INSERT INTO enemy VALUES (50, 'Gus', 93)")
+
 
 connection.commit()
 
 # See Results For Debug Only
-#cursor.execute("SELECT * FROM enemy")
+cursor.execute("SELECT * FROM enemy")
 
-#results = cursor.fetchall()
-#print(results)
+results = cursor.fetchall()
+print(results)
 
 connection.close()

@@ -2,40 +2,9 @@
 """Extract events from kafka and write them to hdfs
 """
 import json
-from pyspark.sql import SparkSession, Row
+from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf, from_json
 from pyspark.sql.types import StructType, StructField, StringType
-
-
-def kill_enemy_event_schema():
-    """
-    root
-    |-- Accept: string (nullable = true)
-    |-- Host: string (nullable = true)
-    |-- User-Agent: string (nullable = true)
-    |-- event_type: string (nullable = true)
-    |-- timestamp: string (nullable = true)
-    """
-    return StructType([
-        StructField("Accept", StringType(), True),
-        StructField("Host", StringType(), True),
-        StructField("User-Agent", StringType(), True),
-        StructField("event_type", StringType(), True),
-        StructField("attributes", StructType([
-            StructField('enemy_id', StringType(), True),
-            StructField('name', StringType(), True),
-            StructField('level', StringType(), True)
-        ]))])
-
-
-@udf('boolean')
-def is_enemy_killed(event_as_json):
-    """udf for filtering events
-    """
-    event = json.loads(event_as_json)
-    if event['event_type'] == 'kill_enemy':
-        return True
-    return False
 
 
 def join_guild_event_schema():
@@ -52,10 +21,9 @@ def join_guild_event_schema():
         StructField("Host", StringType(), True),
         StructField("User-Agent", StringType(), True),
         StructField("event_type", StringType(), True),
-        StructField('attributes', StructType([
-            StructField('guild_id', StringType(), True),
-            StructField('name', StringType(), True)
-        ]))])
+        StructField("guild_id", StringType(), True),
+        StructField("name", StringType(), True),
+    ])
 
 
 @udf('boolean')
@@ -63,12 +31,12 @@ def is_guild_join(event_as_json):
     """udf for filtering events
     """
     event = json.loads(event_as_json)
-    if event['event_type'] == 'join_guild':
+    if event['event_type'] == 'join_a_guild':
         return True
     return False
 
 
-def take_damage_event_schema():
+def kill_enemy_event_schema():
     """
     root
     |-- Accept: string (nullable = true)
@@ -82,19 +50,18 @@ def take_damage_event_schema():
         StructField("Host", StringType(), True),
         StructField("User-Agent", StringType(), True),
         StructField("event_type", StringType(), True),
-        StructField('attributes', StructType([
-            StructField('enemy_id', StringType(), True),
-            StructField('name', StringType(), True),
-            StructField('damage', StringType(), True)
-        ]))])
+        StructField("enemy_id", StringType(), True),
+        StructField("name", StringType(), True),
+        StructField("level", StringType(), True),
+        ])
 
 
 @udf('boolean')
-def is_damage_taken(event_as_json):
+def is_enemy_killed(event_as_json):
     """udf for filtering events
     """
     event = json.loads(event_as_json)
-    if event['event_type'] == 'take_damage':
+    if event['event_type'] == 'kill_enemy':
         return True
     return False
 
@@ -113,11 +80,10 @@ def accept_quest_event_schema():
         StructField("Host", StringType(), True),
         StructField("User-Agent", StringType(), True),
         StructField("event_type", StringType(), True),
-        StructField('attributes', StructType([
-            StructField('quest_id', StringType(), True),
-            StructField('name', StringType(), True),
-            StructField('contact', StringType(), True)
-        ]))])
+        StructField('quest_id', StringType(), True),
+        StructField('name', StringType(), True),
+        StructField('contact', StringType(), True)
+        ])
 
 
 @udf('boolean')
@@ -125,7 +91,37 @@ def is_quest_accepted(event_as_json):
     """udf for filtering events
     """
     event = json.loads(event_as_json)
-    if event['event_type'] == 'accept_quest':
+    if event['event_type'] == 'accepted_a_quest':
+        return True
+    return False
+
+
+def take_damage_event_schema():
+    """
+    root
+    |-- Accept: string (nullable = true)
+    |-- Host: string (nullable = true)
+    |-- User-Agent: string (nullable = true)
+    |-- event_type: string (nullable = true)
+    |-- timestamp: string (nullable = true)
+    """
+    return StructType([
+        StructField("Accept", StringType(), True),
+        StructField("Host", StringType(), True),
+        StructField("User-Agent", StringType(), True),
+        StructField("event_type", StringType(), True),
+        StructField('enemy_id', StringType(), True),
+        StructField('name', StringType(), True),
+        StructField('damage', StringType(), True)
+        ])
+
+
+@udf('boolean')
+def is_damage_taken(event_as_json):
+    """udf for filtering events
+    """
+    event = json.loads(event_as_json)
+    if event['event_type'] == 'take_damage':
         return True
     return False
 
@@ -144,14 +140,13 @@ def transaction_event_schema():
         StructField("Host", StringType(), True),
         StructField("User-Agent", StringType(), True),
         StructField("event_type", StringType(), True),
-        StructField('attributes', StructType([
-            StructField('store_id', StringType(), True),
-            StructField('item_name', StringType(), True),
-            StructField('inventory_id', StringType(), True),
-            StructField('total_cost', StringType(), True),
-            StructField('category', StringType(), True),
-            StructField('on_hand_qty', StringType(), True)
-        ]))])
+        StructField('store_id', StringType(), True),
+        StructField('item_name', StringType(), True),
+        StructField('inventory_id', StringType(), True),
+        StructField('total_cost', StringType(), True),
+        StructField('category', StringType(), True),
+        StructField('on_hand_qty', StringType(), True)
+        ])
 
 
 @udf('boolean')
@@ -164,13 +159,13 @@ def is_transaction(event_as_json):
     return False
 
 
+
 def main():
     """main
     """
     spark = SparkSession \
         .builder \
         .appName("ExtractEventsJob") \
-        .enableHiveSupport() \
         .getOrCreate()
 
     raw_events = spark \
@@ -180,76 +175,6 @@ def main():
         .option("subscribe", "events") \
         .load()
 
-    transaction_records = raw_events \
-        .filter(is_transaction(raw_events.value.cast('string'))) \
-        .select(raw_events.value.cast('string').alias('raw_event'),
-                raw_events.timestamp.cast('string'),
-                from_json(raw_events.value.cast('string'),
-                          transaction_event_schema()).alias('json')) \
-        .select('raw_event', 'timestamp', 'json.*')
-    
-    sink_transactions = transaction_records \
-        .writeStream \
-        .format("parquet") \
-        .option("checkpointLocation", "/tmp/checkpoints_for_transactions") \
-        .option("path", "/tmp/transactions") \
-        .trigger(processingTime="10 seconds") \
-        .start()
-
-    sink_transactions.awaitTermination()
-    
-#     extracted_transactions = transaction_records \
-#         .rdd \
-#         .map(lambda r: Row(timestamp=r.timestamp, **json.loads(r.raw_event))) \
-#         .toDF()
-#     extracted_transactions.printSchema()
-#     extracted_transactions.show()
-
-#     extracted_transactions.registerTempTable("extracted_transactions")
-
-#     spark.sql("""
-#         create external table transactions
-#         stored as parquet
-#         location '/tmp/transactions'
-#         as
-#         select * from extracted_transactions
-#     """)
-
-    guild_joins = raw_events \
-        .filter(is_guild_join(raw_events.value.cast('string'))) \
-        .select(raw_events.value.cast('string').alias('raw_event'),
-                raw_events.timestamp.cast('string'),
-                from_json(raw_events.value.cast('string'),
-                          join_guild_event_schema()).alias('json')) \
-        .select('raw_event', 'timestamp', 'json.*')
-    
-    sink_guild_joins = guild_joins \
-        .writeStream \
-        .format("parquet") \
-        .option("checkpointLocation", "/tmp/checkpoints_for_guild_joins") \
-        .option("path", "/tmp/guild_joins") \
-        .trigger(processingTime="10 seconds") \
-        .start()
-
-    sink_guild_joins.awaitTermination()
-    
-#     extracted_guild_joins = guild_joins \
-#         .rdd \
-#         .map(lambda r: Row(timestamp=r.timestamp, **json.loads(r.raw_event))) \
-#         .toDF()
-#     extracted_guild_joins.printSchema()
-#     extracted_guild_joins.show()
-
-#     extracted_guild_joins.registerTempTable("extracted_guild_joins")
-
-#     spark.sql("""
-#         create external table guild_joins
-#         stored as parquet
-#         location '/tmp/guild_joins'
-#         as
-#         select * from extracted_guild_joins
-#     """)
-    
     enemies_killed = raw_events \
         .filter(is_enemy_killed(raw_events.value.cast('string'))) \
         .select(raw_events.value.cast('string').alias('raw_event'),
@@ -266,59 +191,25 @@ def main():
         .trigger(processingTime="10 seconds") \
         .start()
 
-    sink_enemy_kills.awaitTermination()
+#     sink_enemy_kills.awaitTermination()
     
-#     extracted_enemy_kills = enemies_killed \
-#         .rdd \
-#         .map(lambda r: Row(timestamp=r.timestamp, **json.loads(r.raw_event))) \
-#         .toDF()
-#     extracted_enemy_kills.printSchema()
-#     extracted_enemy_kills.show()
-
-#     extracted_enemy_kills.registerTempTable("extracted_enemy_kills")
-
-#     spark.sql("""
-#         create external table enemies_killed
-#         stored as parquet
-#         location '/tmp/enemies_killed'
-#         as
-#         select * from extracted_enemy_kills
-#     """)
-    
-    damage_taken = raw_events \
-        .filter(is_damage_taken(raw_events.value.cast('string'))) \
+    guild_joins = raw_events \
+        .filter(is_guild_join(raw_events.value.cast('string'))) \
         .select(raw_events.value.cast('string').alias('raw_event'),
                 raw_events.timestamp.cast('string'),
                 from_json(raw_events.value.cast('string'),
-                          take_damage_event_schema()).alias('json')) \
+                          join_guild_event_schema()).alias('json')) \
         .select('raw_event', 'timestamp', 'json.*')
-    
-    sink_take_damage = damage_taken \
+
+    sink_guild_joins = guild_joins \
         .writeStream \
         .format("parquet") \
-        .option("checkpointLocation", "/tmp/checkpoints_for_take_damage") \
-        .option("path", "/tmp/damage_taken") \
+        .option("checkpointLocation", "/tmp/checkpoints_for_guild_joins") \
+        .option("path", "/tmp/guild_joins") \
         .trigger(processingTime="10 seconds") \
         .start()
 
-    sink_take_damage.awaitTermination()
-    
-#     extracted_take_damage = damage_taken \
-#         .rdd \
-#         .map(lambda r: Row(timestamp=r.timestamp, **json.loads(r.raw_event))) \
-#         .toDF()
-#     extracted_take_damage.printSchema()
-#     extracted_take_damage.show()
-
-#     extracted_take_damage.registerTempTable("extracted_damage_taken")
-
-#     spark.sql("""
-#         create external table damage_taken
-#         stored as parquet
-#         location '/tmp/damage_taken'
-#         as
-#         select * from extracted_damage_taken
-#     """)
+#     sink_guild_joins.awaitTermination()
     
     quest_accepted = raw_events \
         .filter(is_quest_accepted(raw_events.value.cast('string'))) \
@@ -336,24 +227,47 @@ def main():
         .trigger(processingTime="10 seconds") \
         .start()
 
-    sink_accept_quest.awaitTermination()
+#     sink_accept_quest.awaitTermination()
+
     
-#     extracted_quest_accept = quest_accepted \
-#         .rdd \
-#         .map(lambda r: Row(timestamp=r.timestamp, **json.loads(r.raw_event))) \
-#         .toDF()
-#     extracted_quest_accept.printSchema()
-#     extracted_quest_accept.show()
+    damage_taken = raw_events \
+        .filter(is_damage_taken(raw_events.value.cast('string'))) \
+        .select(raw_events.value.cast('string').alias('raw_event'),
+                raw_events.timestamp.cast('string'),
+                from_json(raw_events.value.cast('string'),
+                          take_damage_event_schema()).alias('json')) \
+        .select('raw_event', 'timestamp', 'json.*')
+    
+    sink_take_damage = damage_taken \
+        .writeStream \
+        .format("parquet") \
+        .option("checkpointLocation", "/tmp/checkpoints_for_take_damage") \
+        .option("path", "/tmp/damage_taken") \
+        .trigger(processingTime="10 seconds") \
+        .start()
 
-#     extracted_quest_accept.registerTempTable("extracted_quests_accepted")
+#     sink_take_damage.awaitTermination()
 
-#     spark.sql("""
-#         create external table quest_accept
-#         stored as parquet
-#         location '/tmp/quest_accept'
-#         as
-#         select * from extracted_quests_accepted
-#     """)
+    
+    transaction_records = raw_events \
+        .filter(is_transaction(raw_events.value.cast('string'))) \
+        .select(raw_events.value.cast('string').alias('raw_event'),
+                raw_events.timestamp.cast('string'),
+                from_json(raw_events.value.cast('string'),
+                          transaction_event_schema()).alias('json')) \
+        .select('raw_event', 'timestamp', 'json.*')
+    
+    sink_transactions = transaction_records \
+        .writeStream \
+        .format("parquet") \
+        .option("checkpointLocation", "/tmp/checkpoints_for_transactions") \
+        .option("path", "/tmp/transactions") \
+        .trigger(processingTime="10 seconds") \
+        .start()
+
+#     sink_transactions.awaitTermination()
+    
+    spark.streams.awaitAnyTermination()
     
 if __name__ == "__main__":
     main()
