@@ -224,7 +224,7 @@ In terminal 6:
 
 *11. Here's some business questions that can be answered with this data:*
 
-*1. How many different guilds exist currently?*
+* 1. How many different guilds exist currently?
 
 `select count(distinct name) as count_guild
 from guild_joins;`
@@ -233,7 +233,7 @@ from guild_joins;`
 | ----------- | 
 |          26 |
 
-*2. How many guilds are called Templars?*
+* 2. How many guilds are called Templars?
 
 `select count(distinct name) as count_guild_templar
 from guild_joins
@@ -244,7 +244,7 @@ where name like '%Templar';`
 | 10                  |
 
 
-*3. What is the most common quests?*
+* 3. What is the most common quests?
 
 `select name, count(name) as total_quests
 from quests
@@ -260,7 +260,7 @@ order by count(name) desc;`
 | You Are Fired                                 |            7 |
 
 
-*4. What are the least common contacts in quests?*
+* 4. What are the least common contacts in quests?
 
 `select contact, count(contact) as total_counts
 from quests
@@ -273,7 +273,7 @@ order by count(contact) desc;`
 | Bevel Left          |            4 |
 
 
-*5. What is average level of killing an enemy?*
+* 5. What is average level of killing an enemy?
 
 `select round(avg(level),2) as average_level
 from enemy_kills;`
@@ -283,7 +283,7 @@ from enemy_kills;`
 |         44.62 |
 
 
-* 6. Which user was killed on the lowest level?*
+* 6. Which user was killed on the lowest level?
 
 `select name, min(level) as low_level
 from enemy_kills
@@ -298,7 +298,7 @@ limit 2;`
 
 
 
-* 7. Which game level has had the highest amount of kills?*
+* 7. Which game level has had the highest amount of kills?
 
 `select level, count(*) as total_kills
 from enemy_kills
@@ -313,7 +313,7 @@ limit 3;`
 |     4 |           6 |
 
 
-* 8. What is the costliest item?*
+* 8. What is the costliest item?
 
 `select item_name, max(total_cost) as highest_cost
 from transactions
@@ -325,7 +325,7 @@ order by max(total_cost) desc;`
 | Sacred Bow   |       1500.0 |
  
 
-* 9. What are the items that need to be replenished?*
+* 9. What are the items that need to be replenished?
 
 `select item_name, min(on_hand_qty) as lowest_qty
 from transactions
@@ -339,7 +339,7 @@ order by min(on_hand_qty);`
 | Plate Armor  |          7 |
  
 
-* 10. What is highest total cost of each category?*
+* 10. What is highest total cost of each category?
 
 `select category, max(total_cost) as highest_cost
 from transactions
@@ -353,7 +353,7 @@ order by max(total_cost) desc;`
 | Armor    |        500.0 |
  
 
-* 11. What is the total value of items, currently in each store?*
+* 11. What is the total value of items, currently in each store?
 
 `select store_id, sum(total_cost * on_hand_qty) as total_value
 from transactions
@@ -368,7 +368,7 @@ group by store_id;`
 |        3 |    301000.0 |
         
 
-* 12. How many items are in each category?*
+* 12. How many items are in each category?
 
 `select category, count(distinct item_name) as item_count_category
 from transactions
@@ -396,7 +396,7 @@ group by store_id;`
 |        5 |                3 |
 
 
-* 14. Who has taken the highest amount of damage?*
+* 14. Who has taken the highest amount of damage?
 
 `select name, max(damage) as highest_damage
 from take_damage
@@ -410,7 +410,7 @@ limit 2;`
 | John Wick |             67 |
  
 
-* 15. Which enemy has caused the highest damage?*
+* 15. Which enemy has caused the highest damage?
 
 `select enemy_id, max(damage) as highest_damage
 from take_damage
