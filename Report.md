@@ -134,7 +134,7 @@ In terminal 6:
 `show tables;`
 
 |    Table     |
---------------
+|--------------|
 | enemy_kills  |
 | guild_joins  |
 | quests       |
