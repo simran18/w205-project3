@@ -15,8 +15,11 @@ As data scientists at a game development company, we are building a latest mobil
 Each event has it's respective metadata characteric of such events. This report will walk through how an end-to-end data pipeline was created for this game. 
 
 
-## Summary of Findings
+## Intersting Findings
 
+   - There are 26 active guilds players can join, they are not mutualy exclusive
+   - Private and Sheep are the lowest level enemies in the game with a level of 1
+   - The Dragon emeny has the most damage a 99
 
 
 ## How This Project is Structured
