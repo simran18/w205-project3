@@ -1,4 +1,9 @@
-# w205-project3
+# Project 3: Game API
+## W205
+## Simran Bhatia
+## Dan Ortiz
+## Graham Schweer
+## 10/25/2020
 
 ## Summary
 As data scientists at a game development company, we are building a latest mobile game that has the following events:
@@ -16,9 +21,16 @@ Each event has it's respective metadata characteric of such events. This report 
 
 ## How This Project is Structured
 
-BRIEF OVERVIEW OF THE PROJECT STRUCTURE, WHAT FILES DO WHAT.
+#### Pipeline
+   - Docker-conpose and the API server is started with [Start API Server](start_api_server.sh)
+   - API data is stored in the .db files [db folder](/db)
+   - Data in the .db files can be edited in the [db creation folder](database_creation_scripts)
+   - Synthetic data is generated with [call_script](api_call_script.py)
+   - Datafame schema and initial filtering is defined in [data_strem](write_data_stream_v3.py)
+   - Tables in hive are built with the commands in the "How to Load" section 6 of this document
 
-
+#### Analysis
+   - Queries and results are located in [Report](Report.md)
 
 ## How to Load
 
@@ -150,19 +162,20 @@ In terminal 6:
 
    - `docker-compose exec presto presto --server presto:8080 --catalog hive --schema default`
 
+
 ## Technologies Used
 
-   - Docker-compose - Used to manage the docker cluster (must install the docker-compose app. See Technologies Required)
+   - Docker-compose - Used to manage the docker cluster (must install the docker-compose app. (See Technologies Required)
    - Cloudera
-   - Kafka: Used to generate messages\events into topic from the parsed json file
-   - Spark: Takes the messages\events from Kafka to construct a schema and dataframe.
-   - Hive: 
-   - Presto: 
+   - Kafka: Used to generate messages\events into topic from the API calls
+   - Spark: Used to build schema and filters by api call type
+   - Hive: Construct data frames for analysis
+   - Presto: Used to analyise data from stream
    - Flask: Used to write the API to generate synthetic data
    - Linux Command Line
    - Sql Lite: Used to structure database which the API calls from
    - Python: Used for multiple scripts in the project
-   - Appache Bench
+   - Appache Bench: Used to randomly hit the API to generate random synthetic data
  
 
 ## Technologies Required
@@ -171,19 +184,16 @@ In order to run this analysis you need to be running Linux (preferably Ubuntu Li
    - Ubuntu: [Link to Ubuntu](https://ubuntu.com/)
    - Docker : [Link to Docker](https://www.docker.com/)
    - Docker-Compose:
-      - On Linux, in the CLI run the following command: sudo apt-get docker-compose
+      - On Linux, in the CLI run the following command: `sudo apt-get docker-compose`
       
 ## Technologies used in docker-compose file
-The following packages will be downloaded and configured into their own containers during the first initialization of the pipeline_startup.sh shell. Therefore having Linux and docker installed on the machine is sufficient:
+The following packages will be downloaded and configured into their own containers during the first initialization of the start_api_server.sh shell. Therefore having Linux and docker installed on the machine is sufficient:
 
    - Kafka
    - Spark
    - Hive
    - Presto
    - Flask
-   - Sql Lite
-   - Python
+   - MIDS (Includes Sql Lite, Python, CLI)
    - Appache Bench
 
-
-## File Locations and Git Structure
