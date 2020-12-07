@@ -1,11 +1,10 @@
 # Project 3: Understanding User Behavior
 
-## Tasks Description 
-### Building the API server to log kafka events
-
 ## Report Analysis (through Presto CLI)
 
-*9. First we'll look at the tables in HDFS*
+This report includes analysis of randomly-generated synthetic data that has been used to simulate real game and user events. Because the data is generated randomly, different results may be obtained when running the queries reflected below.
+
+*1. First we'll look at the tables in HDFS*
 
 `show tables;`
 
@@ -19,7 +18,7 @@
 
 
 
-*10. Next, let's understand the structure of each table.*
+*2. Next, let's understand the structure of each table.*
 
 `describe enemy_kills;`
 
@@ -98,7 +97,7 @@
 | damage     | integer |         
 
 
-*11. Here's some business questions that can be answered with this data:*
+*3. Here's some business questions that can be answered with this data:*
 
 * 1. How many different guilds exist currently?
 
@@ -120,7 +119,7 @@ where name like '%Templar';`
 | 10                  |
 
 
-* 3. What is the most common quests?
+* 3. What are the most common quests accepted?
 
 `select name, count(name) as total_quests
 from quests
@@ -201,21 +200,7 @@ order by max(total_cost) desc;`
 | Sacred Bow   |       1500.0 |
  
 
-* 9. What are the items that need to be replenished?
-
-`select item_name, min(on_hand_qty) as lowest_qty
-from transactions
-group by item_name
-order by min(on_hand_qty);`
-
-|  item_name   | lowest_qty |
-| ------------ | ---------- |
-| Sacred Bow   |          7 |
-| Master Sword |          7 |
-| Plate Armor  |          7 |
- 
-
-* 10. What is highest total cost of each category?
+* 9. What is highest total cost of each category?
 
 `select category, max(total_cost) as highest_cost
 from transactions
@@ -229,7 +214,7 @@ order by max(total_cost) desc;`
 | Armor    |        500.0 |
  
 
-* 11. What is the total value of items, currently in each store?
+* 10. What is the total value of items in each store?
 
 `select store_id, sum(total_cost * on_hand_qty) as total_value
 from transactions
@@ -244,7 +229,7 @@ group by store_id;`
 |        3 |    301000.0 |
         
 
-* 12. How many items are in each category?
+* 11. How many items are in each category?
 
 `select category, count(distinct item_name) as item_count_category
 from transactions
@@ -257,7 +242,7 @@ group by category;`
 | Sword    |                   1 |
  
 
-* 13. How many items are in each store?*
+* 12. How many items are in each store?*
 
 `select store_id, count(distinct item_name) as item_count_store
 from transactions
@@ -272,7 +257,7 @@ group by store_id;`
 |        5 |                3 |
 
 
-* 14. Who has taken the highest amount of damage?
+* 13. Who has taken the highest amount of damage?
 
 `select name, max(damage) as highest_damage
 from take_damage
@@ -286,7 +271,7 @@ limit 2;`
 | John Wick |             67 |
  
 
-* 15. Which enemy has caused the highest damage?
+* 14. Which enemy has caused the highest damage?
 
 `select enemy_id, max(damage) as highest_damage
 from take_damage

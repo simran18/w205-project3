@@ -1,35 +1,36 @@
 # Project 3: Game API
 ## W205
-## Simran Bhatia
-## Dan Ortiz
-## Graham Schweer
-## 10/25/2020
+### Simran Bhatia, Dan Ortiz, Graham Schweer
+### 12/6/2020
 
 ## Summary
-As data scientists at a game development company, we are building a latest mobile game that has the following events:
+As data scientists at a game development company, we are building our latest mobile game that has the following events:
    - Buy Assets
-   - Join a Guild
+   - Join Guilds
    - Kill Enemies
-   - Take damage
+   - Take Damage
+   - Accept Quests
 
-Each event has it's respective metadata characteric of such events. This report will walk through how an end-to-end data pipeline was created for this game. 
+Each event has its respective metadata attributes. Randomly-generated synthetic data is used in this analysis to simulate real game and user events.  
+
+This report will walk through how the end-to-end data pipeline was created for this game. 
 
 
-## Intersting Findings
+## Interesting Findings
 
-   - There are 26 active guilds players can join, they are not mutualy exclusive
+   - There are 26 active guilds that players can join. They are not mutually exclusive.
    - Private and Sheep are the lowest level enemies in the game with a level of 1
-   - The Dragon emeny has the most damage a 99
+   - The Dragon enemy can inflict the most damage at 99
 
 
 ## How This Project is Structured
 
 #### Pipeline
-   - Docker-conpose and the API server is started with [Start API Server](start_api_server.sh)
-   - API data is stored in the .db files [db folder](/db)
+   - Docker-compose, Kafka producer and the API server is started with [Start API Server](start_api_server.sh)
+   - API data is stored in the .db files [db folder](db)
    - Data in the .db files can be edited in the [db creation folder](database_creation_scripts)
    - Synthetic data is generated with [call_script](api_call_script.py)
-   - Datafame schema and initial filtering is defined in [data_strem](write_data_stream_v3.py)
+   - Datafame schema and initial filtering is defined in [data_stream](write_data_stream_v3.py)
    - Tables in hive are built with the commands in the "How to Load" section 6 of this document
 
 #### Analysis
@@ -42,11 +43,13 @@ In terminal 1:
 
 *1. Start shell script which will set up docker and run the API*
 
-   - `sh start_api_server.sh`
+   - update the directory in line 14 of the 'start_api_server.sh' file 
+   - run `sh start_api_server.sh`
 
 In terminal 2:
 (Make sure you're in the right directory.)
-*2. Randomly generate events using Python script *
+
+*2. Randomly generate events using Python script*
 
    - `python3 api_call_script.py`
     
@@ -63,9 +66,10 @@ In terminal 4:
 *4. Run spark script file from, i.e. running a job*
 
    - `docker-compose exec spark spark-submit /<file path>/write_data_stream_v3.py`
+   - remember to update the file path before running the script above
 
 
-### Land them into HDFS/parquet to make them available for analysis using Presto
+### Write data into HDFS/parquet files to make them available for analysis using Presto
 
 In terminal 5:
 (Make sure you're in the right directory.)
@@ -157,28 +161,30 @@ tblproperties ("parquet.compress"="SNAPPY");
 In terminal 6:
 (Make sure you're in the right directory.)
 
-*7. Check if the tables exist in temp:*
+*7. Check if the tables exist in the HDFS tmp directory:*
 
    - `docker-compose exec cloudera hadoop fs -ls /tmp/`
 
 *8. Start presto:*
 
    - `docker-compose exec presto presto --server presto:8080 --catalog hive --schema default`
+   - query the data
 
 
 ## Technologies Used
 
-   - Docker-compose - Used to manage the docker cluster (must install the docker-compose app. (See Technologies Required)
-   - Cloudera
+   - Docker-compose: Used to manage the docker cluster. Must install the docker-compose app. (See Technologies Required)
+   - Cloudera: Used to store files
    - Kafka: Used to generate messages\events into topic from the API calls
+   - Zookeeper: Act as the data broker for Kafka
    - Spark: Used to build schema and filters by api call type
-   - Hive: Construct data frames for analysis
-   - Presto: Used to analyise data from stream
+   - Hive: Construct data tables for analysis
+   - Presto: Used to analyze data from Hive via Spark stream
    - Flask: Used to write the API to generate synthetic data
-   - Linux Command Line
-   - Sql Lite: Used to structure database which the API calls from
+   - Linux Command Line: Used to execute all commands
+   - Sql Lite: Used to structure database from which the API makes calls
    - Python: Used for multiple scripts in the project
-   - Appache Bench: Used to randomly hit the API to generate random synthetic data
+   - Appache Bench: Used with the API to generate random synthetic data
  
 
 ## Technologies Required
@@ -198,5 +204,5 @@ The following packages will be downloaded and configured into their own containe
    - Presto
    - Flask
    - MIDS (Includes Sql Lite, Python, CLI)
-   - Appache Bench
+   - Apache Bench
 
